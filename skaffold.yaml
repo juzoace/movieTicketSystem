@@ -1,0 +1,26 @@
+apiVersion: skaffold/v2alpha3
+kind: ConfigMap
+metadata:
+  name: myconfigmap
+  labels:
+    app: myapplication
+data:
+  my-key: my-value
+deploy: 
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  # local:
+  #   push: false
+  googleCloudBuild: 
+    projectId: pacific-destiny-272719
+  artifacts:
+    - image: us.gcr.io/pacific-destiny-272719/auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync: 
+        manual: 
+          - src: 'src/**/*.ts'
+            dest: .
