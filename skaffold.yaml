@@ -1,26 +1,26 @@
 apiVersion: skaffold/v2alpha3
-kind: ConfigMap
-metadata:
-  name: myconfigmap
-  labels:
-    app: myapplication
-data:
-  my-key: my-value
-deploy: 
+kind: Config
+deploy:
   kubectl:
     manifests:
       - ./infra/k8s/*
 build:
-  # local:
-  #   push: false
-  googleCloudBuild: 
-    projectId: pacific-destiny-272719
+  local:
+    push: false
   artifacts:
-    - image: us.gcr.io/pacific-destiny-272719/auth
+    - image: cygnetops/auth
       context: auth
       docker:
         dockerfile: Dockerfile
-      sync: 
-        manual: 
+      sync:
+        manual:
           - src: 'src/**/*.ts'
+            dest: .
+    - image: cygnetops/ticketing-client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
             dest: .
